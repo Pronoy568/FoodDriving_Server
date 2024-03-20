@@ -28,6 +28,8 @@ async function run() {
     const db = client.db("assignment");
     const collection = db.collection("users");
     const SuppliesCollection = db.collection("supplies");
+    const gratitudeCollection = db.collection("gratitude");
+    const testimonialCollection = db.collection("testimonial");
 
     // User Registration
     app.post("/api/auth/register", async (req, res) => {
@@ -192,6 +194,75 @@ async function run() {
       }
     });
 
+    // ==============================================================
+    // Gratitude related apis
+    app.post("/create-gratitude", async (req, res) => {
+      try {
+        const gratitudeData = req.body;
+        const result = await gratitudeCollection.insertOne(gratitudeData);
+        res.status(201).json({
+          success: true,
+          message: "Gratitude created successfully",
+          data: result,
+        });
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message || "Gratitude create failed",
+        });
+      }
+    });
+
+    app.get("/gratitudes", async (req, res) => {
+      try {
+        const result = await gratitudeCollection.find().toArray();
+        res.status(200).json({
+          success: true,
+          message: "Successfully retrieved gratitudes data",
+          data: result,
+        });
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message || "Gratitudes failed",
+        });
+      }
+    });
+
+    // ==============================================================
+    // Testimonial related apis
+    app.post("/create-testimonial", async (req, res) => {
+      try {
+        const testimonialData = req.body;
+        const result = await testimonialCollection.insertOne(testimonialData);
+        res.status(201).json({
+          success: true,
+          message: "Testimonial created successfully",
+          data: result,
+        });
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message || "Testimonial create failed",
+        });
+      }
+    });
+
+    app.get("/testimonial", async (req, res) => {
+      try {
+        const result = await testimonialCollection.find().toArray();
+        res.status(200).json({
+          success: true,
+          message: "Successfully retrieved testimonial data",
+          data: result,
+        });
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message || "Testimonial failed",
+        });
+      }
+    });
     // ==============================================================
 
     // Start the server
