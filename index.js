@@ -30,6 +30,7 @@ async function run() {
     const SuppliesCollection = db.collection("supplies");
     const gratitudeCollection = db.collection("gratitude");
     const testimonialCollection = db.collection("testimonial");
+    const volunteerCollection = db.collection("volunteer");
 
     // User Registration
     app.post("/api/auth/register", async (req, res) => {
@@ -260,6 +261,41 @@ async function run() {
         res.status(400).json({
           success: false,
           message: error.message || "Testimonial failed",
+        });
+      }
+    });
+
+    // ==============================================================
+    // volunteer related apis
+    app.post("/create-volunteer", async (req, res) => {
+      try {
+        const volunteerData = req.body;
+        const result = await volunteerCollection.insertOne(volunteerData);
+        res.status(201).json({
+          success: true,
+          message: "Volunteer created successfully",
+          data: result,
+        });
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message || "Volunteer create failed",
+        });
+      }
+    });
+
+    app.get("/volunteer", async (req, res) => {
+      try {
+        const result = await volunteerCollection.find().toArray();
+        res.status(200).json({
+          success: true,
+          message: "Successfully retrieved volunteer data",
+          data: result,
+        });
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message || "Volunteer failed",
         });
       }
     });
